@@ -22,8 +22,13 @@ if [ -f $service_file ]; then
   exit 1
 fi
 
-echo "create_service.sh"
-echo
+if [[ "$*" == *-q* ]]; then
+  quiet=true
+else
+  quiet=false
+  echo "create_service.sh"
+  echo
+fi
 
 echo "-> Creating system service"
 cat >$temp_file <<EOF
@@ -39,14 +44,16 @@ $(if [ "$cwd" != "" ]; then echo WorkingDirectory=${cwd}; fi)
 [Install]
 WantedBy=multi-user.target
 EOF
-nano $temp_file
-echo vvvvvvvvvvvv
-cat $temp_file
-echo ^^^^^^^^^^^^
-read -p "-? Is this ok [Y|n] " -r
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-  rm $temp_file
-  exit 1
+if [[ $quiet == "false" ]]; then
+  nano $temp_file
+  echo vvvvvvvvvvvv
+  cat $temp_file
+  echo ^^^^^^^^^^^^
+  read -p "-? Is this ok [Y|n] " -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    rm $temp_file
+    exit 1
+  fi
 fi
 mv -v $temp_file $service_file
 
