@@ -53,6 +53,9 @@ elif [ -f "Deployfile" ]; then
   if [ -z "$exec" ]; then
     echo "Invalid Deployfile, skipping"
   else
+    if [ -z "$cwd" ]; then
+      cwd="$(readlink -f "$1")"
+    fi
     create_service.sh "$1" "$1" "$exec" "$cwd" -q
   fi
 fi
