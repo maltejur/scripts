@@ -37,7 +37,7 @@ else
   echo
 fi
 
-echo "-> Creating system service"
+echo "-> Creating system service for timer"
 cat >$temp_file <<EOF
 [Unit]
 Description=$description
@@ -71,17 +71,16 @@ OnUnitInactiveSec=$unit_active_sec
 [Install]
 WantedBy=timers.target
 EOF
-echo vvvvvvvvvvvv
-cat $timer_file
-echo ^^^^^^^^^^^^
+if [[ $quiet == "false" ]]; then
+  echo vvvvvvvvvvvv
+  cat $timer_file
+  echo ^^^^^^^^^^^^
+fi
 
-echo "-> Enabling timer"
-systemctl enable ${name}.timer
-systemctl status ${name}.timer
-echo "-> Running the timer for the first time"
+echo "-> Enabling timer and running it for the first time"
 journalctl -f -u ${name}.service --no-pager -n0 -o cat &
 journal_pid=$!
-systemctl start ${name}.service
+systemctl enable --now ${name}.timer
 kill $journal_pid
 
 if [[ $quiet == "false" ]]; then
