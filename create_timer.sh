@@ -7,7 +7,7 @@ if [ $(whoami) != "root" ]; then
 fi
 if [ "$#" -lt 4 ] || [ "$#" -gt 5 ]; then
   echo "Usage: $0 <name> <description> <exec> <unit_active_sec> (cwd)" >&2
-  echo "       (for unit_active_sec see `man systemd.time`)"
+  echo "       (for unit_active_sec see 'man systemd.time')"
   exit 1
 fi
 
