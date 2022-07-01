@@ -77,9 +77,6 @@ echo ^^^^^^^^^^^^
 
 echo "-> Enabling timer"
 systemctl enable --now ${name}.timer
-systemctl status ${name}.timer
-systemctl status ${name}.service
-echo "-> Waiting for first timer run to finish"
 journalctl -f -u ${name}.service
 
 if [[ $quiet == "false" ]]; then
