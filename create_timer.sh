@@ -77,7 +77,7 @@ echo ^^^^^^^^^^^^
 
 echo "-> Enabling timer"
 systemctl enable ${name}.timer
-systenctl start ${name}.service &
+systemctl start ${name}.service &
 journalctl -f -u ${name}.service
 
 if [[ $quiet == "false" ]]; then
