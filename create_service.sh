@@ -58,6 +58,7 @@ fi
 mv -v $temp_file $service_file
 
 echo "-> Enabling service"
+systemctl daemon-reload
 systemctl enable --now $name
 systemctl status $name
 
