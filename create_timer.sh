@@ -76,7 +76,8 @@ cat $timer_file
 echo ^^^^^^^^^^^^
 
 echo "-> Enabling timer"
-systemctl enable --now ${name}.timer
+systemctl enable ${name}.timer
+systenctl start ${name}.service &
 journalctl -f -u ${name}.service
 
 if [[ $quiet == "false" ]]; then
