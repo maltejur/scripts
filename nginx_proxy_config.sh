@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/bash
 
 set -e
 if [ $(whoami) != "root" ]; then
