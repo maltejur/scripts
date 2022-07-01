@@ -1,0 +1,58 @@
+#!/usr/bin/bash
+
+set -e
+if [ $(whoami) != "root" ]; then
+  sudo $0 "$@"
+  exit 0
+fi
+if [ "$#" -lt 3 ] || [ "$#" -gt 4 ]; then
+  echo "Usage: $0 <name> <description> <exec> (cwd)" >&2
+  exit 1
+fi
+
+name=$1
+description=$2
+exec=$3
+cwd=$4
+temp_file=$(mktemp)
+service_file=/etc/systemd/system/${name}.service
+
+if [ -f $service_file ]; then
+  echo "Error: Service '$name' already exists"
+  exit 1
+fi
+
+echo "create_service.sh"
+echo
+
+echo "-> Creating system service"
+cat >$temp_file <<EOF
+[Unit]
+Description=$description
+
+[Service]
+Type=simple
+ExecStart=$exec
+Restart=on-failure
+$(if [ "$cwd" != "" ]; then echo WorkingDirectory=${cwd}; fi)
+
+[Install]
+WantedBy=multi-user.target
+EOF
+nano $temp_file
+echo vvvvvvvvvvvv
+cat $temp_file
+echo ^^^^^^^^^^^^
+read -p "-? Is this ok [Y|n] " -r
+if [[ $REPLY =~ ^[Nn]$ ]]; then
+  rm $temp_file
+  exit 1
+fi
+mv -v $temp_file $service_file
+
+echo "-> Enabling service"
+systemctl enable --now $name
+systemctl status $name
+
+echo
+echo Done.
