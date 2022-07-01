@@ -56,10 +56,10 @@ elif [ -f "Deployfile" ]; then
     if [ -z "$cwd" ]; then
       cwd="$(readlink -f ~/$1)"
     fi
-    create_service.sh "$1" "$1" "$exec" "$cwd" -q
     if [ ! -z "$timer_name" ] && [ ! -z "$timer_exec" ] && [ ! -z "$timer_time" ]; then
       create_timer.sh "$timer_name" "Timer for $1" "$timer_exec" "$timer_time" "$cwd" -q
     fi
+    create_service.sh "$1" "$1" "$exec" "$cwd" -q
   fi
 fi
 echo

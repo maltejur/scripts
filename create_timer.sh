@@ -77,6 +77,7 @@ echo ^^^^^^^^^^^^
 
 echo "-> Enabling timer"
 systemctl enable ${name}.timer
+systemctl status ${name}.timer
 echo "-> Running the timer for the first time"
 journalctl -f -u ${name}.service --no-pager -n0 -o cat &
 journal_pid=$!
