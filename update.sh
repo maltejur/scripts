@@ -1,4 +1,4 @@
-#/bin/sh
+#!/usr/bin/bash
 
 set -e
 cd ~
@@ -49,7 +49,7 @@ if [ -f /etc/systemd/system/$1.service ]; then
   sudo systemctl restart $1
 elif [ -f "Deployfile" ]; then
   echo "-> Creating service from Deployfile"
-  source "Deployfile"
+  source ./Deployfile
   if [ -z "$exec" ]; then
     create_service.sh "$1" "$1" "$exec" "$cwd" -q
   else
