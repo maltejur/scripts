@@ -57,6 +57,13 @@ elif [ -f "Deployfile" ]; then
       cwd="$(readlink -f ~/$1)"
     fi
     create_service.sh "$1" "$1" "$exec" "$cwd" -q
+    if [ ! -z "$timer_exec" ]; then
+      if [ -z "$timer_time" ]; then
+        echo "Deployfile is missing 'timer_time', skipping timer creation"
+      else
+        create_timer.sh "$1" "$1" "$timer_exec" "$timer_time" "$cwd" -q
+      fi
+    fi
   fi
 fi
 echo

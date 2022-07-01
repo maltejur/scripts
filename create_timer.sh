@@ -5,7 +5,7 @@ if [ $(whoami) != "root" ]; then
   sudo $0 "$@"
   exit 0
 fi
-if [ "$#" -lt 4 ] || [ "$#" -gt 5 ]; then
+if [ "$#" -lt 4 ]; then
   echo "Usage: $0 <name> <description> <exec> <unit_active_sec> (cwd)" >&2
   echo "       (for unit_active_sec see 'man systemd.time')"
   exit 1
@@ -29,8 +29,13 @@ if [ -f $timer_file ]; then
   exit 1
 fi
 
-echo "create_service.sh"
-echo
+if [[ "$*" == *-q* ]]; then
+  quiet=true
+else
+  quiet=false
+  echo "create_timer.sh"
+  echo
+fi
 
 echo "-> Creating system service"
 cat >$temp_file <<EOF
@@ -42,14 +47,16 @@ Type=oneshot
 ExecStart=$exec
 $(if [ "$cwd" != "" ]; then echo WorkingDirectory=${cwd}; fi)
 EOF
-nano $temp_file
-echo vvvvvvvvvvvv
-cat $temp_file
-echo ^^^^^^^^^^^^
-read -p "-? Is this ok [Y|n] " -r
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-  rm $temp_file
-  exit 1
+if [[ $quiet == "false" ]]; then
+  nano $temp_file
+  echo vvvvvvvvvvvv
+  cat $temp_file
+  echo ^^^^^^^^^^^^
+  read -p "-? Is this ok [Y|n] " -r
+  if [[ $REPLY =~ ^[Nn]$ ]]; then
+    rm $temp_file
+    exit 1
+  fi
 fi
 mv -v $temp_file $service_file
 
@@ -73,5 +80,7 @@ systemctl enable --now ${name}.timer
 systemctl status ${name}.timer
 systemctl status ${name}.service
 
-echo
-echo Done.
+if [[ $quiet == "false" ]]; then
+  echo
+  echo Done.
+fi
