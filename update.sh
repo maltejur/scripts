@@ -51,9 +51,9 @@ elif [ -f "Deployfile" ]; then
   echo "-> Creating service from Deployfile"
   source ./Deployfile
   if [ -z "$exec" ]; then
-    create_service.sh "$1" "$1" "$exec" "$cwd" -q
-  else
     echo "Invalid Deployfile, skipping"
+  else
+    create_service.sh "$1" "$1" "$exec" "$cwd" -q
   fi
 fi
 echo
