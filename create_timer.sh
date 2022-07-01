@@ -75,11 +75,12 @@ echo vvvvvvvvvvvv
 cat $timer_file
 echo ^^^^^^^^^^^^
 
-echo "-> Enabling timer and waiting for first timer run to finish"
-systemctl enable --now ${name}.timer &
-journalctl -f -u ${name}.service
+echo "-> Enabling timer"
+systemctl enable --now ${name}.timer
 systemctl status ${name}.timer
 systemctl status ${name}.service
+echo "-> Waiting for first timer run to finish"
+journalctl -f -u ${name}.service
 
 if [[ $quiet == "false" ]]; then
   echo
