@@ -61,5 +61,7 @@ echo "-> Enabling service"
 systemctl enable --now $name
 systemctl status $name
 
-echo
-echo Done.
+if [[ $quiet == "false" ]]; then
+  echo
+  echo Done.
+fi
