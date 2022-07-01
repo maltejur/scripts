@@ -10,10 +10,16 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-echo "nginx_proxy_conf.sh"
-echo
+if [[ "$*" == *-q* ]]; then
+  quiet=true
+else
+  quiet=false
+  echo "nginx_proxy_conf.sh"
+  echo
+fi
+
 echo "-> Creating configuration file"
-cat << EOF >> /etc/nginx/sites-available/$1
+cat <<EOF >>/etc/nginx/sites-available/$1
 server {
     listen 80;
     server_name $1;
@@ -23,12 +29,17 @@ server {
     }
 }
 EOF
-echo vvvvvvvvvvvv
-cat /etc/nginx/sites-available/$1
-echo ^^^^^^^^^^^^
+if [[ $quiet == "false" ]]; then
+  echo vvvvvvvvvvvv
+  cat /etc/nginx/sites-available/$1
+  echo ^^^^^^^^^^^^
+fi
 echo "-> Enabling configuration"
 ln -s /etc/nginx/sites-available/$1 /etc/nginx/sites-enabled/$1
 echo "-> Running certbot"
 certbot -d $1
-echo
-echo "Done!"
+
+if [[ $quiet == "false" ]]; then
+  echo
+  echo "Done!"
+fi
