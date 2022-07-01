@@ -80,8 +80,7 @@ fi
 echo "-> Enabling timer and running it for the first time"
 journalctl -f -u ${name}.service --no-pager -n0 -o cat &
 journal_pid=$!
-systemctl enable --now ${name}.timer
-systemctl --wait ${name}.service
+systemctl --wait enable --now ${name}.timer
 kill $journal_pid
 
 if [[ $quiet == "false" ]]; then
