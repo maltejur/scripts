@@ -5,7 +5,7 @@ if [ $(whoami) != "root" ]; then
   sudo $0 "$@"
   exit 0
 fi
-if [ "$#" -lt 3 ] || [ "$#" -gt 4 ]; then
+if [ "$#" -lt 3 ]; then
   echo "Usage: $0 <name> <description> <exec> (cwd)" >&2
   exit 1
 fi
