@@ -77,8 +77,11 @@ echo ^^^^^^^^^^^^
 
 echo "-> Enabling timer"
 systemctl enable ${name}.timer
-systemctl start ${name}.service &
-journalctl -f -u ${name}.service
+echo "-> Running the timer for the first time"
+journalctl -f -u ${name}.service --no-pager -n0 &
+journal_pid=$!
+systemctl start ${name}.service
+kill $journal_pid
 
 if [[ $quiet == "false" ]]; then
   echo
