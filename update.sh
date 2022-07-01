@@ -34,13 +34,15 @@ if [ -d "prisma" ]; then
   echo "-> Pushing prisma db"
   npx prisma db push
 fi
-if grep -q "directus" "package.json"; then
-  echo "-> Running Directus migrations"
-  npx directus bootstrap
-fi
-if grep -q "\"build\": " "package.json"; then
-  echo "-> Rebuilding"
-  yarn build
+if [ -f "package.json" ]; then
+  if grep -q "directus" "package.json"; then
+    echo "-> Running Directus migrations"
+    npx directus bootstrap
+  fi
+  if grep -q "\"build\": " "package.json"; then
+    echo "-> Rebuilding"
+    yarn build
+  fi
 fi
 if [ -f /etc/systemd/system/$1.service ]; then
   echo "-> Restarting service"
