@@ -6,7 +6,7 @@ if [ $(whoami) != "root" ]; then
   exit 0
 fi
 if [ "$#" -lt 4 ]; then
-  echo "Usage: $0 <name> <description> <exec> <unit_active_sec> (cwd)" >&2
+  echo "Usage: $0 <name> <description> <exec> <unit_active_sec> (cwd) (user)" >&2
   echo "       (for unit_active_sec see 'man systemd.time')"
   exit 1
 fi
@@ -16,6 +16,7 @@ description=$2
 exec=$3
 unit_active_sec=$4
 cwd=$5
+user=$6
 temp_file=$(mktemp)
 service_file=/etc/systemd/system/${name}.service
 timer_file=/etc/systemd/system/${name}.timer
@@ -45,7 +46,8 @@ Description=$description
 [Service]
 Type=oneshot
 ExecStart=$exec
-$(if [ "$cwd" != "" ]; then echo WorkingDirectory=${cwd}; fi)
+$(if [ "$cwd" != "" ] && [ "$cwd" != "-q" ]; then printf WorkingDirectory=${cwd}; fi)
+$(if [ "$user" != "" ] && [ "$user" != "-q" ]; then printf "User=${user}\nGroup=${user}"; fi)
 EOF
 if [[ $quiet == "false" ]]; then
   nano $temp_file

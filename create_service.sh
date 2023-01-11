@@ -6,7 +6,7 @@ if [ $(whoami) != "root" ]; then
   exit 0
 fi
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <name> <description> <exec> (cwd)" >&2
+  echo "Usage: $0 <name> <description> <exec> (cwd) (user)" >&2
   exit 1
 fi
 
@@ -14,6 +14,7 @@ name=$1
 description=$2
 exec=$3
 cwd=$4
+user=$5
 temp_file=$(mktemp)
 service_file=/etc/systemd/system/${name}.service
 
@@ -39,7 +40,8 @@ Description=$description
 Type=simple
 ExecStart=$exec
 Restart=on-failure
-$(if [ "$cwd" != "" ]; then echo WorkingDirectory=${cwd}; fi)
+$(if [ "$cwd" != "" ] && [ "$cwd" != "-q" ]; then printf WorkingDirectory=${cwd}; fi)
+$(if [ "$user" != "" ] && [ "$user" != "-q" ]; then printf "User=${user}\nGroup=${user}"; fi)
 
 [Install]
 WantedBy=multi-user.target
